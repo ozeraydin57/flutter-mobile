@@ -1,4 +1,5 @@
 import 'package:ecommerce/models/students.dart';
+import 'package:ecommerce/screens/student_add.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,23 +12,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String selectedStudent = "!";
-
+  Student selectedStudent = Student.WithId(0, "", "", 0);
   List<Student> students = [
-    new Student("Enfin", "Demiroğ", 65),
-    new Student("Kerem", "Savaş", 35),
-    new Student("Özer", "aydın", 90),
-    new Student("Gökan", "aydın", 65),
-    new Student("Özweer", "aydın", 50),
-    new Student("Hayriye", "aydın", 45),
-    new Student("Halit", "kerem", 30),
-    new Student("Hakkı", "muratoğlu", 60),
-    new Student("Ali", "aydın", 49),
-    new Student("Ayşe", "kalender", 25),
-    new Student("Fatma", "aydın", 55),
+    new Student.WithId(1, "Enfin", "Demiroğ", 65),
+    new Student.WithId(2, "Kerem", "Savaş", 35),
+    new Student.WithId(3, "Özer", "aydın", 90),
+    new Student.WithId(4, "Gökan", "aydın", 65),
+    new Student.WithId(5, "Özweer", "aydın", 50),
   ];
-
-  var ogrenciler = ["Engin Demir", "Ali buldu", "Özer Aydın", "Veli buldu", "Ayşe aydın", "Fatma gül"];
 
   @override
   Widget build(BuildContext context) {
@@ -38,20 +30,9 @@ class _MyAppState extends State<MyApp> {
         body: buildBody(context));
   }
 
-  String sinavHesapla(int puan) {
-    String mesaj = "";
-    if (puan >= 50)
-      mesaj = "Geçti";
-    else if (puan >= 40)
-      mesaj = "bütünlemeye kaldı";
-    else
-      mesaj = "kaldı";
-    return mesaj;
-  }
-
-  void mesajGoster(BuildContext context, String mesaj) {
+  void mesajGoster(BuildContext context, String title, String mesaj) {
     var alert = AlertDialog(
-      title: Text("Sınav sonucu"),
+      title: Text(title),
       content: Text(mesaj),
     );
     showDialog(context: context, builder: (BuildContext context) => alert);
@@ -72,15 +53,15 @@ class _MyAppState extends State<MyApp> {
                     subtitle: Text("Sınav notu : " + students[index].grade.toString() + " [" + students[index].getStatus + "]"),
                     trailing: buildStatusIcon(students[index].grade),
                     onTap: () {
-                      //var mesaj = sinavHesapla(students[index].grade);
                       setState(() {
-                        selectedStudent = students[index].firstName;
+                        selectedStudent = students[index];
                       });
-                      // mesajGoster(context, mesaj);
+                      //var mesaj = sinavHesapla(students[index].grade);
+                      //mesajGoster(context, mesaj);
                     },
                   );
                 })),
-        Text("Seçili Öğrenci " + selectedStudent),
+        Text("Seçili Öğrenci " + selectedStudent.firstName),
         Row(
           children: <Widget>[
             Flexible(
@@ -91,43 +72,60 @@ class _MyAppState extends State<MyApp> {
                 child: Column(
                   children: <Widget>[
                     Icon(Icons.add),
-                    SizedBox(height: 3,),
+                    SizedBox(
+                      height: 3,
+                    ),
                     Text("Yeni öğrenci"),
                   ],
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => StudentAdd(students))).then((value) => setState((){}));
+                },
               ),
             ),
-            SizedBox(width: 2,),
+            SizedBox(
+              width: 2,
+            ),
             Flexible(
               fit: FlexFit.tight,
               flex: 2,
               child: RaisedButton(
-                color:Colors.greenAccent,
-                child: Column (
+                color: Colors.greenAccent,
+                child: Column(
                   children: <Widget>[
                     Icon(Icons.update),
-                    SizedBox(height: 3,),
+                    SizedBox(
+                      height: 3,
+                    ),
                     Text("Güncelle"),
                   ],
                 ),
                 onPressed: () {},
               ),
             ),
-            SizedBox(width: 2,),
+            SizedBox(
+              width: 2,
+            ),
             Flexible(
               fit: FlexFit.tight,
               flex: 1,
               child: RaisedButton(
-                color:Colors.redAccent,
+                color: Colors.redAccent,
                 child: Column(
                   children: <Widget>[
                     Icon(Icons.delete),
-                    SizedBox(height: 3,),
+                    SizedBox(
+                      height: 3,
+                    ),
                     Text("Sil"),
                   ],
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    students.remove(selectedStudent);
+                  });
+                  mesajGoster(context, "Silme işlemi", selectedStudent.firstName + " silindi");
+                },
               ),
             )
           ],

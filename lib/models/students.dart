@@ -1,13 +1,24 @@
 class Student {
+  int id;
   String firstName;
   String lastName;
   int grade;
 
-  Student(String firstName, String lastName, int grade, [String status]) {
+  Student.WithId(int id, String firstName, String lastName, int grade, [String status]) {
+    this.id=id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.grade = grade;
   }
+
+  Student(String firstName, String lastName, int grade, [String status]) {
+    this.id=id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.grade = grade;
+  }
+
+  Student.WithoutInfo();
 
   String get getStatus{
     String mesaj="";
