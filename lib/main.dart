@@ -5,7 +5,14 @@ void main() {
   runApp(MaterialApp(home: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState(); // return { return _MyAppState();}
+}
+
+class _MyAppState extends State<MyApp> {
+  String selectedStudent = "!";
+
   List<Student> students = [
     new Student("Enfin", "Demiroğ", 65),
     new Student("Kerem", "Savaş", 35),
@@ -59,24 +66,75 @@ class MyApp extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          "https://cdn.pixabay.com/photo/2016/01/19/17/19/young-woman-1149643_960_720.jpg"),
+                      backgroundImage: NetworkImage("https://cdn.pixabay.com/photo/2016/01/19/17/19/young-woman-1149643_960_720.jpg"),
                     ),
                     title: Text(students[index].firstName + " " + students[index].lastName),
-                    subtitle:
-                        Text("Sınav notu : " + students[index].grade.toString() + " [" + students[index].getStatus + "]"),
+                    subtitle: Text("Sınav notu : " + students[index].grade.toString() + " [" + students[index].getStatus + "]"),
                     trailing: buildStatusIcon(students[index].grade),
                     onTap: () {
-                      var mesaj = sinavHesapla(students[index].grade);
-                      mesajGoster(context, mesaj);
+                      //var mesaj = sinavHesapla(students[index].grade);
+                      setState(() {
+                        selectedStudent = students[index].firstName;
+                      });
+                      // mesajGoster(context, mesaj);
                     },
                   );
                 })),
-        Center(
-            child: RaisedButton(
-          child: Text("Soncu gör.."),
-          onPressed: () {},
-        )),
+        Text("Seçili Öğrenci " + selectedStudent),
+        Row(
+          children: <Widget>[
+            Flexible(
+              fit: FlexFit.tight,
+              flex: 2,
+              child: RaisedButton(
+                color: Colors.blueAccent,
+                child: Column(
+                  children: <Widget>[
+                    Icon(Icons.add),
+                    SizedBox(height: 3,),
+                    Text("Yeni öğrenci"),
+                  ],
+                ),
+                onPressed: () {},
+              ),
+            ),
+            SizedBox(width: 2,),
+            Flexible(
+              fit: FlexFit.tight,
+              flex: 2,
+              child: RaisedButton(
+                color:Colors.greenAccent,
+                child: Column (
+                  children: <Widget>[
+                    Icon(Icons.update),
+                    SizedBox(height: 3,),
+                    Text("Güncelle"),
+                  ],
+                ),
+                onPressed: () {},
+              ),
+            ),
+            SizedBox(width: 2,),
+            Flexible(
+              fit: FlexFit.tight,
+              flex: 1,
+              child: RaisedButton(
+                color:Colors.redAccent,
+                child: Column(
+                  children: <Widget>[
+                    Icon(Icons.delete),
+                    SizedBox(height: 3,),
+                    Text("Sil"),
+                  ],
+                ),
+                onPressed: () {},
+              ),
+            )
+          ],
+        ),
+        Row(
+          children: <Widget>[],
+        ),
       ],
     );
   }
